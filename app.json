@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "DBZ",
+    "name": "Dragon Ball Z",
     "slug": "DBZ",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "dark",
 
     "splash": {
       "image": "./assets/splash.png",
@@ -14,20 +14,33 @@
     },
 
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.dbz.app"
     },
 
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#0f172a",
         "foregroundImage": "./assets/images/android-icon-foreground.png"
-      }
+      },
+      "package": "com.dbz.app"
     },
 
     "web": {
       "favicon": "./assets/images/favicon.png"
     },
 
-    "plugins": ["expo-splash-screen"]
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#0f172a"
+        }
+      ]
+    ],
+    "scheme": "myapp"
   }
 }

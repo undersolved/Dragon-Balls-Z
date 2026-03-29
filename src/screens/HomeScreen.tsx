@@ -5,6 +5,8 @@ import {
   ActivityIndicator,
   TextInput,
   StyleSheet,
+  SafeAreaView,
+  Dimensions,
 } from "react-native";
 import debounce from "lodash.debounce";
 
@@ -17,6 +19,8 @@ import { RootStackParamList } from "../../App";
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList>;
 };
+
+const { width } = Dimensions.get("window");
 
 export default function HomeScreen({ navigation }: Props) {
   const [data, setData] = useState<Character[]>([]);
@@ -49,39 +53,76 @@ export default function HomeScreen({ navigation }: Props) {
   const debouncedSearch = useCallback(debounce(handleSearch, 400), []);
 
   return (
-    <View style={styles.container}>
-      <TextInput
-        placeholder="Search character..."
-        placeholderTextColor="#aaa"
-        style={styles.input}
-        onChangeText={debouncedSearch}
-      />
-
-      <FlatList
-        data={data}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <CharacterCard
-            item={item}
-            onPress={() => navigation.navigate("Details", { id: item.id })}
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <View style={styles.searchContainer}>
+          <TextInput
+            placeholder="Search character..."
+            placeholderTextColor="#94a3b8"
+            style={styles.input}
+            onChangeText={debouncedSearch}
           />
-        )}
-        onEndReached={() => {
-          if (!query && nextUrl) loadCharacters(nextUrl);
-        }}
-        ListFooterComponent={loading ? <ActivityIndicator /> : null}
-      />
-    </View>
+        </View>
+
+        <FlatList
+          data={data}
+          keyExtractor={(item) => item.id.toString()}
+          numColumns={2}
+          columnWrapperStyle={styles.columnWrapper}
+          renderItem={({ item }) => (
+            <CharacterCard
+              item={item}
+              onPress={() => navigation.navigate("Details", { id: item.id })}
+            />
+          )}
+          onEndReached={() => {
+            if (!query && nextUrl) loadCharacters(nextUrl);
+          }}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={
+            loading ? <ActivityIndicator size="large" color="#3b82f6" /> : null
+          }
+          contentContainerStyle={styles.listContent}
+          scrollIndicatorInsets={{ right: 1 }}
+        />
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#0f172a" },
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#0f172a",
+  },
+  container: {
+    flex: 1,
+    backgroundColor: "#0f172a",
+  },
+  searchContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: "#0f172a",
+    borderBottomWidth: 1,
+    borderBottomColor: "#1e293b",
+  },
   input: {
-    margin: 10,
-    padding: 12,
-    borderRadius: 15,
-    backgroundColor: "rgba(255,255,255,0.1)",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 12,
+    backgroundColor: "rgba(255, 255, 255, 0.08)",
     color: "#fff",
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.1)",
+  },
+  listContent: {
+    paddingHorizontal: 8,
+    paddingVertical: 12,
+  },
+  columnWrapper: {
+    justifyContent: "space-between",
+    paddingHorizontal: 8,
+    marginBottom: 8,
   },
 });
